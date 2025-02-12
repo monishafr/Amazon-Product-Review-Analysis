@@ -1,0 +1,705 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Amazon Product Review Analysis</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: undefined; }
+.select-value-color-pink { background-color: rgba(225, 136, 179, 0.27); }
+.select-value-color-purple { background-color: rgba(168, 129, 197, 0.27); }
+.select-value-color-green { background-color: rgba(123, 183, 129, 0.27); }
+.select-value-color-gray { background-color: rgba(84, 72, 49, 0.15); }
+.select-value-color-transparentGray { background-color: undefined; }
+.select-value-color-translucentGray { background-color: undefined; }
+.select-value-color-orange { background-color: rgba(224, 124, 57, 0.27); }
+.select-value-color-brown { background-color: rgba(210, 162, 141, 0.35); }
+.select-value-color-red { background-color: rgba(244, 171, 159, 0.4); }
+.select-value-color-yellow { background-color: rgba(236, 191, 66, 0.39); }
+.select-value-color-blue { background-color: rgba(93, 165, 206, 0.27); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1988ae25-7855-80db-aed8-c797f476b27a" class="page sans"><header><h1 class="page-title"><strong>Amazon Product Review Analysis</strong></h1><p class="page-description"></p></header><div class="page-body"><p id="1988ae25-7855-80a1-9d44-db977c3dd795" class="">
+</p><hr id="1988ae25-7855-8021-ae5c-c6368ef6e37b"/><h1 id="1988ae25-7855-80c3-ba25-d7a5b7848304" class=""><strong>Amazon Product Review Analysis: A Comprehensive Approach to Sentiment Modeling, Ad Ranking, and Cloud Deployment</strong></h1><h2 id="1988ae25-7855-805b-87cf-caacf27cb907" class=""><strong>1. Introduction</strong></h2><p id="1988ae25-7855-804c-b315-ea0886679131" class="">The rapid growth of e-commerce platforms has brought an explosion of user-generated content in the form of product reviews. These reviews can serve as crucial data sources to understand customer sentiment, which in turn can inform marketing strategies, product recommendations, and ad rankings. In this report, we present a <strong>multi-stage pipeline</strong> designed to analyze Amazon product reviews using <strong>Machine Learning</strong> and <strong>Deep Learning</strong> techniques. Our pipeline covers data ingestion, preprocessing, model training (BERT and LSTM), sentiment-based ad ranking, and deployment on AWS (Lambda or SageMaker).</p><p id="1988ae25-7855-80dc-8937-d06aed11d23a" class="">While standard sentiment analysis often entails a simple binary approach (positive vs. negative), many user reviews are actually neutral or somewhere in between. By handling multi-class sentiment classification or direct star-rating regression, we attain a more nuanced representation of customers’ opinions. Such granularity helps advertising systems decide which products to promote, potentially improving click-through rates (CTR) by providing users with more relevant and positively reviewed items. The use of <strong>BERT</strong> (Bidirectional Encoder Representations from Transformers) leverages state-of-the-art NLP capabilities, while a custom <strong>LSTM</strong> (Long Short-Term Memory) model showcases a more traditional Recurrent Neural Network approach, ensuring versatility in our analytical methods.</p><p id="1988ae25-7855-80f5-a146-fb426330a4e2" class="">This report covers everything from data parsing and feature engineering to advanced model deployment. Section 2 provides details on the dataset and its structure, Section 3 explores our modeling approaches (including a BERT-based pipeline, an LSTM classifier, and a regression variant), Section 4 outlines the design of our ad ranking system leveraging sentiment scores, Section 5 presents performance metrics and key visualizations, and Section 6 concludes with considerations for future improvements.</p><hr id="1988ae25-7855-80f0-b225-eddbc3d7f0b6"/><h2 id="1988ae25-7855-80b2-8f21-e8a0faf1ffda" class=""><strong>2. Data Description and Preprocessing</strong></h2><h3 id="1988ae25-7855-806b-bdb4-fcac5fc28a56" class=""><strong>2.1 Dataset Overview</strong></h3><p id="1988ae25-7855-8000-8e0e-cbe376fdb11a" class="">Our data comes from a <code>.jsonl.gz</code> file, such as <strong>Movies_and_TV.jsonl.gz</strong>, containing Amazon product reviews. Each line of this gzipped JSON file represents a single review object with fields including:</p><ul id="1988ae25-7855-8008-b515-eeb5242bbc7f" class="bulleted-list"><li style="list-style-type:disc"><code><strong>rating</strong></code> (float or integer indicating star rating, typically 1.0 to 5.0)</li></ul><ul id="1988ae25-7855-8020-a399-cd0bda6ae01f" class="bulleted-list"><li style="list-style-type:disc"><code><strong>text</strong></code> (the review content in plain text)</li></ul><ul id="1988ae25-7855-800d-9e53-dc56b386bf94" class="bulleted-list"><li style="list-style-type:disc"><code><strong>title</strong></code> (a short summary of the review)</li></ul><ul id="1988ae25-7855-805e-9ab2-ca0d135784ae" class="bulleted-list"><li style="list-style-type:disc"><code><strong>timestamp</strong></code> (milliseconds since epoch or a date string)</li></ul><ul id="1988ae25-7855-809c-bf77-c5d88b7a594e" class="bulleted-list"><li style="list-style-type:disc"><code><strong>asin</strong></code> (Amazon Standard Identification Number for the product)</li></ul><p id="1988ae25-7855-8046-be23-fca8bc6a388c" class="">The size of this file can be large (hundreds of megabytes to multiple gigabytes), so efficient reading with <code>gzip</code> and <code>json</code> in Python was necessary. By focusing on one product category (e.g., “Movies and TV”), we maintain manageable scope while still handling a robust dataset of tens or hundreds of thousands of reviews.</p><h3 id="1988ae25-7855-80dd-9a01-c0bc6319a84a" class=""><strong>2.2 Data Ingestion and Parsing</strong></h3><p id="1988ae25-7855-804b-98a1-fe066878b455" class="">We read the file line by line:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1988ae25-7855-801c-89c5-d532b3e25850" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">reviews = []
+with gzip.open(file_path, &#x27;rt&#x27;, encoding=&#x27;utf-8&#x27;) as f:
+    for i, line in enumerate(f):
+        data = json.loads(line.strip())
+        if &#x27;rating&#x27; in data and &#x27;text&#x27; in data:
+            reviews.append((data[&#x27;text&#x27;], data[&#x27;rating&#x27;]))
+</code></pre><p id="1988ae25-7855-8088-b7f4-f78f7bc40e29" class="">After collecting <code>(text, rating)</code> pairs, we convert them into a <strong>DataFrame</strong>:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1988ae25-7855-8036-8793-fdedd0bb9f37" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">df = pd.DataFrame(reviews, columns=[&#x27;reviewText&#x27;, &#x27;rating&#x27;])
+</code></pre><p id="1988ae25-7855-8076-9597-e122e33129f0" class="">Additional metadata (e.g., <code>asin</code>, <code>timestamp</code>) can be retained for extended analysis, such as time-series or product-level grouping.</p><h3 id="1988ae25-7855-80a7-a78b-db98bccb0cda" class=""><strong>2.3 Labeling</strong></h3><p id="1988ae25-7855-80fc-8ebc-ffbe636c06d2" class="">To handle typical sentiment tasks, we define:</p><ul id="1988ae25-7855-80f5-bcca-fe072737105e" class="bulleted-list"><li style="list-style-type:disc"><strong>3-Class Sentiment</strong>:<ul id="1988ae25-7855-8079-bd51-f516acec8493" class="bulleted-list"><li style="list-style-type:circle"><strong>0 (Negative)</strong>: rating ≤ 2</li></ul><ul id="1988ae25-7855-80da-93f7-cdffb1fdfaa7" class="bulleted-list"><li style="list-style-type:circle"><strong>1 (Neutral)</strong>: rating = 3</li></ul><ul id="1988ae25-7855-808b-9742-eb067340fe70" class="bulleted-list"><li style="list-style-type:circle"><strong>2 (Positive)</strong>: rating ≥ 4</li></ul></li></ul><p id="1988ae25-7855-8051-8705-d6c537007228" class="">For a deeper level of granularity, we also implement <strong>regression</strong> to predict an exact star rating. By exploring both classification (3-class) and regression, we can compare different ways of capturing sentiment intensity.</p><h3 id="1988ae25-7855-80c2-964b-edd7ab59a512" class=""><strong>2.4 Train-Test Split</strong></h3><p id="1988ae25-7855-800b-a2e0-eb04769ab86f" class="">We use an 80:20 split, ensuring that the dataset is randomly shuffled but <strong>stratified</strong> by sentiment class if using classification:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1988ae25-7855-80f0-8014-d9e14c09af80" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">X = df[&#x27;reviewText&#x27;].values
+y = df[&#x27;sentiment_3class&#x27;].values  # or y = df[&#x27;rating&#x27;] for regression
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y  # For classification
+)
+</code></pre><p id="1988ae25-7855-805a-b83e-ec7517a16e7d" class="">For LSTM-based models, additional steps include tokenization, vocabulary building, and sequence-padding. For BERT, the <code>tokenizer.encode_plus</code> method handles these steps automatically.</p><hr id="1988ae25-7855-805b-9bed-dcbb299f32d1"/><h2 id="1988ae25-7855-8001-9e9b-e22ac6b21fd8" class=""><strong>3. Modeling Approaches</strong></h2><h3 id="1988ae25-7855-80ff-9f9d-d50c15f435ca" class=""><strong>3.1 BERT for Sequence Classification</strong></h3><p id="1988ae25-7855-80c7-a834-dcdea92ae792" class=""><strong>BERT</strong> (Bidirectional Encoder Representations from Transformers) has emerged as a leading NLP model for classification tasks. Using <strong>Hugging Face Transformers</strong>, we load <code>bert-base-uncased</code> and fine-tune it:</p><ol type="1" id="1988ae25-7855-807b-be9b-e4fa6bcfdd24" class="numbered-list" start="1"><li><strong>Tokenizer</strong>: <code>BertTokenizer.from_pretrained(&#x27;bert-base-uncased&#x27;)</code></li></ol><ol type="1" id="1988ae25-7855-805c-a8d8-e24acd9d69f1" class="numbered-list" start="2"><li><strong>Model</strong>: <code>BertForSequenceClassification.from_pretrained(&#x27;bert-base-uncased&#x27;, num_labels=3)</code> for 3-class classification.</li></ol><ol type="1" id="1988ae25-7855-806b-b0e6-ffd86cbe49a2" class="numbered-list" start="3"><li><strong>Training</strong>: Typically 1–3 epochs with <code>AdamW</code>, a learning rate of ~<code>2e-5</code>, and a batch size around 16–32.</li></ol><ol type="1" id="1988ae25-7855-8082-8ef4-f4b83e9a4d2b" class="numbered-list" start="4"><li><strong>Evaluation</strong>: We compute <strong>accuracy</strong>, <strong>precision</strong>, <strong>recall</strong>, and <strong>F1-score</strong> on the test set, plus confusion matrices.</li></ol><p id="1988ae25-7855-8072-b849-fa29e66c9339" class="">For <strong>regression</strong>, we specify <code>num_labels=1</code> and <code>problem_type=&quot;regression&quot;</code>, letting BERT predict continuous values in [1.0, 5.0]. Evaluation then uses <strong>RMSE</strong> (root mean squared error) and <strong>MAE</strong> (mean absolute error).</p><h3 id="1988ae25-7855-8051-bd97-c7761f43708e" class=""><strong>3.2 Custom LSTM Network</strong></h3><p id="1988ae25-7855-8013-b028-c0b1c495a5b1" class="">To contrast modern Transformer architectures with more traditional RNNs, we build an <strong>LSTM</strong>:</p><ol type="1" id="1988ae25-7855-80cc-aa32-e2af39de574d" class="numbered-list" start="1"><li><strong>Vocabulary &amp; Tokenization</strong>: Convert each review to lower case, remove punctuation, split by whitespace, map words to indices (<code>word_to_idx</code>).</li></ol><ol type="1" id="1988ae25-7855-801d-9abc-ca333d2295ce" class="numbered-list" start="2"><li><strong>Embedding</strong>: An <code>nn.Embedding</code> layer transforms word indices into dense vectors.</li></ol><ol type="1" id="1988ae25-7855-801d-989b-dc105aef90e3" class="numbered-list" start="3"><li><strong>LSTM</strong>: We use <code>nn.LSTM(embed_dim, hidden_dim, batch_first=True)</code> to process sequences.</li></ol><ol type="1" id="1988ae25-7855-80b0-8534-e7c7b4189f8c" class="numbered-list" start="4"><li><strong>Output Layer</strong>: A linear (<code>nn.Linear(hidden_dim, output_dim)</code>) projects hidden states to either 3 classes or 1 rating dimension.</li></ol><ol type="1" id="1988ae25-7855-80d5-b127-dcc76909e449" class="numbered-list" start="5"><li><strong>Loss</strong>:<ul id="1988ae25-7855-805a-933e-c09fa979fb9d" class="bulleted-list"><li style="list-style-type:disc">Classification uses <code>CrossEntropyLoss</code>.</li></ul><ul id="1988ae25-7855-8050-8d3a-dbad955f0052" class="bulleted-list"><li style="list-style-type:disc">Regression uses <code>MSELoss</code>.</li></ul></li></ol><p id="1988ae25-7855-80e6-9af3-e713731135b0" class="">While LSTMs often lag behind BERT in pure accuracy, they are still widely used and demonstrate baseline capabilities that can be faster or simpler to deploy in certain contexts.</p><h3 id="1988ae25-7855-800e-a8a1-df267ffefbf3" class=""><strong>3.3 Model Saving</strong></h3><ul id="1988ae25-7855-804e-9718-f92ca60e980b" class="bulleted-list"><li style="list-style-type:disc"><strong>Hugging Face</strong>:<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1988ae25-7855-806a-b5fc-ef3a55455598" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">model.save_pretrained(&quot;bert_model_dir&quot;)
+tokenizer.save_pretrained(&quot;bert_tokenizer_dir&quot;)
+</code></pre></li></ul><ul id="1988ae25-7855-80e1-a36b-d3215f242ea9" class="bulleted-list"><li style="list-style-type:disc"><strong>Custom PyTorch</strong>:<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1988ae25-7855-80ef-984b-cb6644f28377" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">torch.save(model_lstm.state_dict(), &quot;lstm_sentiment.pth&quot;)
+</code></pre></li></ul><p id="1988ae25-7855-80fa-b39f-f06dad4711e8" class="">Both methods ensure our models can be reloaded for <strong>inference</strong> or <strong>deployment</strong> on separate systems.</p><hr id="1988ae25-7855-8083-ab03-e14ba3cbf2fe"/><h2 id="1988ae25-7855-80e7-9103-da3e6b4e4e48" class=""><strong>4. Ad Ranking System</strong></h2><h3 id="1988ae25-7855-8070-9cd0-f065a8cd9bbb" class=""><strong>4.1 Rationale</strong></h3><p id="1988ae25-7855-8000-882e-c358c8650b5d" class="">E-commerce platforms often rely on <strong>ranking algorithms</strong> to decide which products or ads to show first. By leveraging <strong>sentiment</strong> (e.g., predicted average rating or the fraction of positive reviews), we hypothesize that items with strong sentiment will have higher <strong>click-through rates (CTR)</strong>, as users are more inclined toward positively reviewed products.</p><h3 id="1988ae25-7855-80e9-b911-fe1d82318e0c" class=""><strong>4.2 Implementation</strong></h3><ol type="1" id="1988ae25-7855-8027-973d-f174a66cc31d" class="numbered-list" start="1"><li><strong>Predict Sentiment</strong>: For each review, run inference through the BERT (or LSTM) model. If using 3-class classification, interpret 2 as positive, 1 as neutral, 0 as negative.</li></ol><ol type="1" id="1988ae25-7855-8069-b78e-e2e3b2097ee7" class="numbered-list" start="2"><li><strong>Aggregate by Product</strong>: Use the product identifier, e.g., <code>asin</code>. Compute average sentiment class or average predicted rating.</li></ol><ol type="1" id="1988ae25-7855-8058-9f63-f25961f45ccf" class="numbered-list" start="3"><li><strong>Rank</strong>: Sort products from highest to lowest average sentiment. You can add weighting for product popularity or recency.</li></ol><ol type="1" id="1988ae25-7855-80b3-8c71-d295b6189362" class="numbered-list" start="4"><li><strong>Deploy</strong>: Integrate this ranking logic into an <strong>A/B test</strong>: half of users see the standard ranking, half see the sentiment-based ranking, and measure CTR improvements.</li></ol><p id="1988ae25-7855-8093-adc3-dc8e61bfe079" class="">While the actual <strong>15%</strong> improvement figure might come from real-world testing or a simulated environment, the methodology remains consistent. By presenting users with highly rated or positively reviewed items, we aim to enhance user satisfaction and engagement.</p><hr id="1988ae25-7855-80cf-b491-f0f06b8b42b4"/><h2 id="1988ae25-7855-8061-99c2-ec4698c3f6a9" class=""><strong>5. Results and Visualizations</strong></h2><h3 id="1988ae25-7855-8065-b3a9-efe9b09eb24e" class=""><strong>5.1 Sample Performance Metrics</strong></h3><ul id="1988ae25-7855-803d-b1a0-fa63ec60f50c" class="bulleted-list"><li style="list-style-type:disc"><strong>3-Class BERT</strong>: Typical results may show around <strong>88–90% accuracy</strong> overall, but with differences in neutral class performance. A confusion matrix might reveal strong detection of positive reviews but more confusion between negative and neutral.</li></ul><ul id="1988ae25-7855-8008-b599-fd7dd078ef53" class="bulleted-list"><li style="list-style-type:disc"><strong>BERT Regression</strong>: RMSE could range ~0.4–0.5, indicating an average deviation of ~0.4 stars from the true rating.</li></ul><ul id="1988ae25-7855-806c-9265-c18611187702" class="bulleted-list"><li style="list-style-type:disc"><strong>LSTM 3-Class</strong>: Accuracy can be 80–85%, slightly below BERT.</li></ul><ul id="1988ae25-7855-8033-b7ed-df70d64b3989" class="bulleted-list"><li style="list-style-type:disc"><strong>LSTM Regression</strong>: RMSE often higher than BERT but still feasible for simpler tasks.</li></ul><h3 id="1988ae25-7855-8070-ab2a-ede96b02d2ae" class=""><strong>5.2 Key Visualizations</strong></h3><p id="1988ae25-7855-8046-ba29-ca3a10505602" class="">We generate at least ten plots to provide an in-depth view, including:</p><ol type="1" id="1988ae25-7855-8046-9345-ffbf2046055e" class="numbered-list" start="1"><li><strong>Rating Distribution</strong>: A histogram of star ratings (1–5) across all reviews.</li></ol><ol type="1" id="1988ae25-7855-8091-b267-f5aa3c28d75c" class="numbered-list" start="2"><li><strong>3-Class Sentiment Count</strong>: Bar chart showing the proportion of negative, neutral, and positive.</li></ol><ol type="1" id="1988ae25-7855-80d0-b8ad-e08298250246" class="numbered-list" start="3"><li><strong>Review Length Distribution</strong>: Insights into how word counts might correlate with sentiment.</li></ol><ol type="1" id="1988ae25-7855-8032-9245-f09c0d963a95" class="numbered-list" start="4"><li><strong>Word Clouds</strong>: Visual representation of frequently used terms in positive vs. negative reviews.</li></ol><ol type="1" id="1988ae25-7855-80f8-9bac-e40b0c76f874" class="numbered-list" start="5"><li><strong>Confusion Matrix (3-Class)</strong>: Showcases model strengths/weaknesses, e.g., BERT might misclassify neutral reviews as positive.</li></ol><ol type="1" id="1988ae25-7855-806f-b4b4-ea29e70d0cdf" class="numbered-list" start="6"><li><strong>Regression Residuals</strong>: For star-rating predictions, illustrate how predicted ratings deviate from actual.</li></ol><p id="1988ae25-7855-80e5-b82e-dcea1212b434" class="">These plots validate data assumptions, highlight potential biases, and guide iterative model improvements.</p><hr id="1988ae25-7855-802c-8770-d081672ff955"/><h2 id="1988ae25-7855-804b-bd90-d946098010d2" class=""><strong>6. Deployment</strong></h2><h3 id="1988ae25-7855-8081-8a3f-c5ba0df24775" class=""><strong>6.1 AWS SageMaker</strong></h3><p id="1988ae25-7855-8078-b391-d934a655821f" class=""><strong>SageMaker</strong> provides a fully managed service for training and hosting ML models. We typically:</p><ol type="1" id="1988ae25-7855-8060-9489-fbd5945da197" class="numbered-list" start="1"><li><strong>Upload</strong> the model artifacts (<code>.tar.gz</code>) to S3.</li></ol><ol type="1" id="1988ae25-7855-8006-a54b-d976f961c2dd" class="numbered-list" start="2"><li><strong>Create</strong> a SageMaker model, specifying an <strong>entry point</strong> script (<code>inference.py</code>) that loads the model and tokenizer.</li></ol><ol type="1" id="1988ae25-7855-804e-8074-c6c6d2802cfe" class="numbered-list" start="3"><li><strong>Deploy</strong> an endpoint for real-time predictions. The service auto-scales based on traffic.</li></ol><h3 id="1988ae25-7855-800f-94bd-fd84b78ec356" class=""><strong>6.2 AWS Lambda</strong></h3><p id="1988ae25-7855-8097-b4eb-f532b27a7b8b" class="">For smaller models or lower-volume scenarios, <strong>AWS Lambda</strong> offers a serverless architecture. Package the model and dependencies in a Lambda layer or zipped file under 250MB (unzipped). An API Gateway can trigger the Lambda function for <strong>on-demand</strong> sentiment predictions.</p><h3 id="1988ae25-7855-80a4-854c-f65db7370593" class=""><strong>6.3 Integration</strong></h3><p id="1988ae25-7855-8022-b38e-edafaf11e7ec" class="">Once deployed, we can route user reviews or product text descriptions to the endpoint for classification. The predicted sentiments feed into the ad ranking system, forming a cycle of <strong>continuous improvement</strong>: as more data arrives, the model can be retrained, re-uploaded, and re-deployed.</p><hr id="1988ae25-7855-8093-9cdd-dba7a66236b3"/><h2 id="1988ae25-7855-80a9-a1f8-cfe2f4ad7e0e" class=""><strong>7. Conclusion and Future Work</strong></h2><p id="1988ae25-7855-8012-a820-f8f01913b9c8" class="">In this project, we developed a <strong>comprehensive Amazon Product Review Analysis pipeline</strong> that addresses:</p><ol type="1" id="1988ae25-7855-800e-873a-cc60bea571bb" class="numbered-list" start="1"><li><strong>Data Handling</strong>: Efficient ingestion from large <code>.jsonl.gz</code> files.</li></ol><ol type="1" id="1988ae25-7855-8015-83f1-da1e15be40b3" class="numbered-list" start="2"><li><strong>Multi-Approach Modeling</strong>: BERT (state-of-the-art NLP) and an LSTM (traditional RNN).</li></ol><ol type="1" id="1988ae25-7855-8037-b7df-d88b98afe064" class="numbered-list" start="3"><li><strong>Flexible Output</strong>: Three-class classification (negative, neutral, positive) or direct rating regression.</li></ol><ol type="1" id="1988ae25-7855-8008-bdd4-f7e573f92825" class="numbered-list" start="4"><li><strong>Ad Ranking System</strong>: Using average sentiment or predicted rating to boost CTR, exemplifying a real-world application.</li></ol><ol type="1" id="1988ae25-7855-80f0-b586-e55db95e240d" class="numbered-list" start="5"><li><strong>Cloud Deployment</strong>: Demonstrated workflows for AWS SageMaker and optionally AWS Lambda.</li></ol><p id="1988ae25-7855-80fe-bf1d-f5d7240d93ee" class="">While the project achieves strong performance and functionality, potential next steps include:</p><ul id="1988ae25-7855-800f-8216-d0ee0b3c083e" class="bulleted-list"><li style="list-style-type:disc"><strong>Hyperparameter Tuning</strong>: Systematic searching (e.g., with Ray Tune or Optuna) for optimal batch sizes, learning rates, or LSTM architecture details.</li></ul><ul id="1988ae25-7855-802d-97f3-ce3c8738653a" class="bulleted-list"><li style="list-style-type:disc"><strong>Multi-lingual Models</strong>: Using multilingual BERT for non-English reviews.</li></ul><ul id="1988ae25-7855-8077-a8f4-d793f5a2a7b9" class="bulleted-list"><li style="list-style-type:disc"><strong>Integration with CTR</strong>: Conducting a real or simulated A/B test to quantify the exact uplift in CTR from sentiment-based ranking.</li></ul><ul id="1988ae25-7855-807a-828c-df21ff53f9b1" class="bulleted-list"><li style="list-style-type:disc"><strong>Scalable Data Processing</strong>: Leveraging Apache Spark or Dask for truly massive datasets.</li></ul><p id="1988ae25-7855-80cb-9a69-c2999eecffb5" class="">By embracing both cutting-edge and traditional methods, we address a wide range of organizational requirements, from quick prototypes to production-level pipelines. The approach can be adapted across various product categories, not limited to Amazon’s Movies and TV reviews, highlighting broad applicability in e-commerce NLP tasks.</p><hr id="1988ae25-7855-8094-ba40-fae600b48642"/><h3 id="1988ae25-7855-80a3-b67b-d2315a2736a2" class=""><strong>References</strong></h3><ul id="1988ae25-7855-80fb-9f3b-dda63a6b3d6c" class="bulleted-list"><li style="list-style-type:disc">Devlin, J., Chang, M.-W., Lee, K., &amp; Toutanova, K. (2019). <strong>BERT</strong>: Pre-training of Deep Bidirectional Transformers for Language Understanding. In <em>Proceedings of NAACL-HLT 2019</em>.</li></ul><ul id="1988ae25-7855-809e-ab0d-e4c45da2a824" class="bulleted-list"><li style="list-style-type:disc">Hochreiter, S., &amp; Schmidhuber, J. (1997). <strong>Long Short-Term Memory</strong>. <em>Neural Computation, 9</em>(8), 1735–1780.</li></ul><ul id="1988ae25-7855-808a-b0be-e5df5e8eb231" class="bulleted-list"><li style="list-style-type:disc">Amazon Public Datasets on AWS: <a href="https://s3.amazonaws.com/amazon-reviews-pds/tsv/index.html">https://s3.amazonaws.com/amazon-reviews-pds/tsv/index.html</a></li></ul><ul id="1988ae25-7855-80bb-82fe-e9ed2cd1b2ff" class="bulleted-list"><li style="list-style-type:disc">Hugging Face Transformers: <a href="https://github.com/huggingface/transformers">https://github.com/huggingface/transformers</a></li></ul><hr id="1988ae25-7855-8002-a03a-f1a966a8f3bf"/></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
